@@ -1,0 +1,40 @@
+body{
+    background-color: #61b15a;
+    font-family: sans-serif;
+}
+h1{
+    color:#212121;
+    text-align:center;
+    margin:10px;
+}
+.main-header{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+.add-btn{
+    font-size:25px;
+    margin:10px 20px 20px 20px;
+}
+.main-container{
+    display:grid;
+    grid-template-columns: auto auto auto auto auto;
+}
+
+.head{
+    font-size:25px;
+    background-color: #ffce89;
+    padding:10px;
+}
+
+.book-unread{
+    font-size:25px;
+    background-color:#fff76a;
+    padding:10px;
+}
+
+.book-read{
+    font-size:25px;
+    background-color:#adce74;
+    padding:10px;
+}

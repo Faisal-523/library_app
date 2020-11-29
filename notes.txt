@@ -1,0 +1,12 @@
+1. Create an object called books and array myLibrary.
+books object contains the following items: title, author, pages, read_status.
+2. Create a button 'Add Books'. When the user presses this button, a pop-up form appears.
+This form has input fields for following parameters: title, author, pages, read_status.
+When 'the pop up form is submitted, a new instance of books object is created and the data from pop up form is updated in the new object instance.
+This new object  is then pushed to myLibrary array.
+3. Create a function display. This function is used to display all object instances in the myLibrary array.
+
+Problems:
+1. How to create a pop up form.
+2. How to get the data from pop up form into javascript.
+
