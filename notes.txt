@@ -6,7 +6,10 @@ When 'the pop up form is submitted, a new instance of books object is created an
 This new object  is then pushed to myLibrary array.
 3. Create a function display. This function is used to display all object instances in the myLibrary array.
 
-Problems:
+Learnings:
 1. How to create a pop up form.
 2. How to get the data from pop up form into javascript.
+3.Usage of 'this' in DOM manipulation.
+4. Usage of objects and instantiation.
+5.How to add local storage
 

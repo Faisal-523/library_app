@@ -113,6 +113,7 @@ function addBook(title, author, pages, status){
     newBook.pages = pages;
     newBook.read = status;
     myLibrary.push(newBook);
+    localStorage.setItem("books", JSON.stringify(myLibrary)); //convert array to string and store it in local storage
     console.table(myLibrary);
     
 }
@@ -142,9 +143,13 @@ add_btn.addEventListener('click',openForm);
 const submit_btn = document.getElementById("submit");
 submit_btn.addEventListener('click', getData);
 
-
+if(localStorage.getItem("books")){
+    myLibrary = JSON.parse(localStorage.getItem("books"));
+    myLibraryDisplay();
+}
+else{
 addBook('Title', 'Author', 'Pages', 'Status');
 addBook('100 years of Solitude', 'Gabriel Garcia Marquez', 600, 'read');
 addBook('Old Man and the sea', 'Ernest Hemingway', 100, 'unread');
-myLibraryDisplay();
+}
 
