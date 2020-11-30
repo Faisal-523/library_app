@@ -38,6 +38,7 @@ function updateStatus(e){
     myLibrary[Number(attr)].read = 'unread';
     else
     myLibrary[Number(attr)].read = 'read';
+    localStorage.setItem("books", JSON.stringify(myLibrary)); //convert array to string and store it in local storage
     myLibraryDisplay();
 }
 
@@ -46,6 +47,7 @@ function removeItem(e){
     attr = attr.replace(/^\D+/g,'');   //Use regex to extract index of element
     console.log(attr);
     myLibrary.splice(Number(attr),1);
+    localStorage.setItem("books", JSON.stringify(myLibrary)); //convert array to string and store it in local storage
     myLibraryDisplay();
 }
 
