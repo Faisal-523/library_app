@@ -1,11 +1,19 @@
 body{
-    background-color: #61b15a;
+    background-color: #fff;
     font-family: sans-serif;
+    font-weight:300;
 }
 h1{
     color:#212121;
-    text-align:center;
-    margin:10px;
+    margin:10px 0 10px 0;
+    font-family: sans-serif;
+    font-weight:300;
+}
+
+h2{
+    color:#212121;
+    font-family: sans-serif;
+    font-weight:300;
 }
 .main-header{
     display:flex;
@@ -13,28 +21,108 @@ h1{
     align-items: center;
 }
 .add-btn{
-    font-size:25px;
-    margin:10px 20px 20px 20px;
+    font-size:15px;
+    margin:10px 0 20px 0;
+    padding:10px;
+    font-family: sans-serif;
+    font-weight:300;
+    border:none;
 }
 .main-container{
     display:grid;
-    grid-template-columns: auto auto auto auto auto;
+    grid-template-columns: auto auto auto auto auto auto auto;
+    margin: 0 10% 0 10%
 }
 
 .head{
-    font-size:25px;
-    background-color: #ffce89;
+    font-size:20px;
+    background-color: #fff;
     padding:10px;
 }
 
 .book-unread{
-    font-size:25px;
+    font-size:15px;
     background-color:#fff76a;
     padding:10px;
 }
 
 .book-read{
-    font-size:25px;
+    font-size:15px;
     background-color:#adce74;
     padding:10px;
 }
+
+.read-btn{
+    font-size:15px;
+    font-family: sans-serif;
+    font-weight: 300;
+    margin:5px 5px 5px 10px;
+    border:none;
+}
+
+.remove-btn{
+    font-size:15px;
+    font-family: sans-serif;
+    font-weight: 300;
+    margin:5px 5px 5px 10px;
+    border:none;
+}
+
+/* Pop up form stle elements */
+
+/* The popup form - hidden by default */
+.form-popup {
+    display: none;
+    position: fixed;
+    top: 10%;
+    z-index: 10;
+    border:1px solid #d3d3d3
+  }
+  
+  /* Add styles to the form container */
+  .form-container {
+    max-width: 300px;
+    padding: 10px;
+    background-color: white;
+  }
+  
+  /* Full-width input fields */
+  .form-container input[type=text], .form-container input[type=password] {
+    width: 90%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    border: none;
+    background: #f1f1f1;
+  }
+  
+  /* When the inputs get focus, do something */
+  .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+    background-color: #ddd;
+    outline: none;
+  }
+
+
+  .form-container input[type=radio]{
+    margin: 0 0 22px 0;
+}
+
+  /* Set a style for the submit/login button */
+  .form-container .btn {
+    padding: 16px 20px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom:10px;
+    border:none;
+    font-size:15px;
+    font-family: sans-serif;
+    font-weight: 300;
+  }
+  
+  /* Add a red background color to the cancel button */
+  .form-container .cancel {
+  }
+  
+  /* Add some hover effects to buttons */
+  .form-container .btn:hover, .open-button:hover {
+    opacity: 1;
+  }
