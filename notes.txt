@@ -13,3 +13,8 @@ Learnings:
 4. Usage of objects and instantiation.
 5.How to add local storage
 
+---------------------------------------------------------------------
+Rework the entire javascript code to make it modular.
+Try to follow DRY (Dont Repeat Your code).
+
+

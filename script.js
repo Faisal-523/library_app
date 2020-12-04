@@ -1,157 +1,159 @@
-const book = {
-    title:'default_title',
-    author:'default_author',
-    pages:'default_pages',
-    read:'default_unread',
-}
 
-let myLibrary = [];
 
-function insertDiv(str, myclass){
-    let newDiv1 = document.createElement('div');
-    newDiv1.textContent = str;
-    newDiv1.classList.add(myclass);
-    main_container.appendChild(newDiv1);
-    return newDiv1;
-}
-function insertButton(str, data_id, myclass){
-    let newBtn = document.createElement('button');
-    newBtn.textContent = str;
-    newBtn.classList.add(myclass);
-    newBtn.setAttribute("data-id", data_id);
-    main_container.appendChild(newBtn);
-    return newBtn;
-}
-
-function clearDisplay(){
-
-    while(main_container.firstChild){
-        main_container.removeChild(main_container.firstChild);
+//Class to create book
+const book = class book{
+    
+    constructor(title, author, pages, status){
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.status = status;
+    }
+    get getTitle(){
+        return this.title;
+    }
+    get getAuthor(){
+        return this.author;
+    }
+    get getPages(){
+        return this.pages;
+    }
+    get getStatus(){
+        return this.status;
+    }
+    set setStatus(str){
+        this.status = str;
     }
 }
 
-function updateStatus(e){
-    let attr = this.getAttribute('data-id');
-    attr = attr.replace(/^\D+/g,'');  //Use regex to extract index of element
-    console.log(attr);
-    if(myLibrary[Number(attr)].read == 'read')
-    myLibrary[Number(attr)].read = 'unread';
-    else
-    myLibrary[Number(attr)].read = 'read';
-    localStorage.setItem("books", JSON.stringify(myLibrary)); //convert array to string and store it in local storage
-    myLibraryDisplay();
-}
+//domCache function handles DOM manipulation activities
+const domCache = (()=>{
+    this.mainHeader = document.querySelector(".main-header").getElementsByTagName('*');
+    this.myForm = Array.from(Array.from(mainHeader).filter((items)=>items.getAttribute('class') === 'form-container'))[0];
+    domList = [{name:'mainheader', container:this.mainHeader},{name:'myform',container:this.myForm}];
 
-function removeItem(e){
-    let attr = this.getAttribute('data-id');
-    attr = attr.replace(/^\D+/g,'');   //Use regex to extract index of element
-    console.log(attr);
-    myLibrary.splice(Number(attr),1);
-    localStorage.setItem("books", JSON.stringify(myLibrary)); //convert array to string and store it in local storage
-    myLibraryDisplay();
-}
 
-function myLibraryDisplay(){
-    let myIndex = 0;
-    let myDiv;
-    let myBtn;
-    let readButton;
-    let removeButton;
-    let i;
-    clearDisplay();
-    myLibrary.forEach(item => {
-        if(myIndex == 0){
-        myDiv = insertDiv('No.', 'head');
-        myDiv = insertDiv(item.title, 'head');
-        myDiv = insertDiv(item.author, 'head');
-        myDiv = insertDiv(item.pages, 'head');
-        myDiv = insertDiv(item.read, 'head');
-        myDiv = insertDiv('', 'head');
-        myDiv = insertDiv('', 'head');
-        myIndex++;
-        }
-        else if(item.read == 'unread'){
-            myDiv = insertDiv(myIndex.toString(), 'book-unread');
-            myDiv = insertDiv(item.title, 'book-unread');
-            myDiv = insertDiv(item.author, 'book-unread');
-            myDiv = insertDiv(item.pages, 'book-unread');
-            myDiv = insertDiv(item.read, 'book-unread');
-            myBtn = insertButton('Read/Unread', `upddate_${myIndex}`,'read-btn');
-            myBtn = insertButton('Delete', `remove_${myIndex}`,'remove-btn');
-            myIndex++;
+    function find(obj){
+        let elem;
+        domList.forEach(item=>{
+            if(item.name == obj.name){
+                elem = Array.from(domList[0].container).filter((element) => element.getAttribute(obj.attribute) == obj.match);
+                console.log(elem);
+            }
+        });
+        return elem;
+    }
+    return {find};
+})();
+
+//This module contains the methods for modifying the list of books in the library
+const myLibrary = (()=>{
+    let bookList = [];
+    this.addBtn = domCache.find({name:'mainheader', attribute:'class',match:'add-btn'})[0];
+    this.formContainer = domCache.find({name:'myform', attribute:'id',match:'myForm'})[0];
+    this.submitBtn = domCache.find({name:'myform', attribute:'id',match:'submit'})[0];
+    this.cancelBtn = domCache.find({name:'myform', attribute:'id',match:'cancel'})[0];
+
+
+    function addBook(obj){
+
+        let nBook = new book();
+        for(const prop in nBook){
+            if(prop == 'status'){
+                let statusArray = domCache.find({name:'myform', attribute:'name',match:'readStatus'});
+                nBook[prop] = obj[prop] || statusArray.filter(item => item.checked==true)[0].value;
+            }
+            else{
+                console.log(prop);
+                nBook[prop] = obj[prop] || domCache.find({name:'myform', attribute:'id',match:prop})[0].value;
+            }
+        };
+        bookList.push(nBook);
+        console.log(bookList);
+        //displayControl.render();
+    }
+
+    function removeBook(event){
+        bookList.splice(bookIndex,1);
+        displayControl.render();
+    }
+
+    function updateBook(event){ 
+        let bookIndex = Number(this.id.replace(/^\D+/g),''); //get index of the book from id
+        if(bookList[bookIndex].getStatus === 'read'){
+            bookList[bookIndex].setStatus = 'unread';
         }
         else{
-            myDiv = insertDiv(myIndex.toString(), 'book-read');
-            myDiv = insertDiv(item.title, 'book-read');
-            myDiv = insertDiv(item.author, 'book-read');
-            myDiv = insertDiv(item.pages, 'book-read');
-            myDiv = insertDiv(item.read, 'book-read');
-            myBtn = insertButton('Read/Unread', `upddate_${myIndex}`,'read-btn');
-            myBtn = insertButton('Delete', `remove_${myIndex}`,'remove-btn');
-            myIndex++;
-        }      
-    });
-
-        readButton = document.querySelectorAll('.read-btn');
-        Array.from(readButton).forEach(item => item.addEventListener('click', updateStatus));
-        removeButton = document.querySelectorAll('.remove-btn');
-        Array.from(removeButton).forEach(item => item.addEventListener('click', removeItem));
-        
-}
-
-/* script for pop up form */
-function openForm() {
-    document.getElementById("myForm").style.display = "block";
-  }
-  
-  function closeForm() {
-    document.getElementById("myForm").style.display = "none";
-  } 
-
-function addBook(title, author, pages, status){
-    let newBook = Object.create(book);
-    newBook.title = title;
-    newBook.author = author;
-    newBook.pages = pages;
-    newBook.read = status;
-    myLibrary.push(newBook);
-    localStorage.setItem("books", JSON.stringify(myLibrary)); //convert array to string and store it in local storage
-    console.table(myLibrary);
-    
-}
-
-function getData(){
-    let readStatus;
-    let status = document.getElementsByName('readStatus');
-    status.forEach(item => {
-        if(item.checked){
-            readStatus = item.value;
+            bookList[bookIndex].setStatus = 'read';
         }
-    });
-    let title = document.getElementById('title').value;
-    let author = document.getElementById('author').value;
-    let pages = document.getElementById('pages').value;
-    if(!Number.isInteger(Number(pages)))
-    pages = 0;
-    closeForm();
-    addBook(title,author,pages,readStatus);
-    myLibraryDisplay();
-}
+        displayControl.render();
+    }
 
-const main_container = document.querySelector('.main-container')
-const add_btn = document.querySelector('.add-btn');
-add_btn.addEventListener('click',openForm);
+    //let boundAddBook = addBook.bind(this); //Bind the function so that 'this' can be used properly
 
-const submit_btn = document.getElementById("submit");
-submit_btn.addEventListener('click', getData);
+    function initBtns(){
+        //console.table(mainHeader);
+        //Array.from(mainHeader).forEach(item=>console.log(item.getAttribute('id')));
+        //console.log(addBtn);
+        //console.log(submitBtn);
+        addBook({title:'Title', author:'Author',pages:'Pages',status:'Status'});
 
-if(localStorage.getItem("books")){
-    myLibrary = JSON.parse(localStorage.getItem("books"));
-    myLibraryDisplay();
-}
-else{
-addBook('Title', 'Author', 'Pages', 'Status');
-addBook('100 years of Solitude', 'Gabriel Garcia Marquez', 600, 'read');
-addBook('Old Man and the sea', 'Ernest Hemingway', 100, 'unread');
-}
+       addBtn.addEventListener('click',function(e){
+           console.log('add btn clicked');
+        formContainer.style.display = 'block';   
+       });
+
+       cancelBtn.addEventListener('click',function(e){
+        console.log('cancel btn clicked');
+        formContainer.style.display = 'none';   
+       });
+
+       submitBtn.addEventListener('click',function(e){
+        console.log('submit btn clicked');
+        formContainer.style.display = 'none';  
+        addBook(); 
+       });
+       //console.log(Array.from(myForm).forEach(item =>console.log(item.id)));
+       //console.log
+        
+    }
+
+    return{initBtns, removeBook, updateBook}
+})();
+
+const displayControl = (()=>{
+
+    const headArray = ['No.', 'Title', 'Author', 'Pages', 'Status','readStatus','delete']
+    function render(bookArray){
+        bookArray.forEach(item=>{
+            headArray.forEach(field=>{
+                let newItem = Object.create(newElement);
+                if(field == 'readStatus' || field == 'delete'){
+                newItem.create('button');
+                if(field == 'delete')
+                newItem.addClass(['remove-btn']);
+                else
+                newItem.addClass('read-btn')
+                }
+                else{
+                newItem.create('div');
+                if(item.status == 'read')
+                newItem.addClass(['read']);
+                else
+                newItem.addClass(['unread']);
+                }
+                newItem.addId(`${field}${bookArray.indexOf(item)}`);
+                newItem.text(item.status);//This is not correct. Need to correct this.
+                newItem.append();
+            });
+        });
+    }
+    function render(){
+        addBookEntry();
+    }
+    return {render}
+})();
+
+myLibrary.initBtns();
+
 
