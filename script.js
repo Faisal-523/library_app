@@ -49,7 +49,7 @@ const myLibrary = (()=>{
         };
         bookList.push(nBook);
         console.log(bookList);
-        //displayControl.render();
+       displayControl.render(bookList);
     }
 
     function removeBook(event){
@@ -87,33 +87,41 @@ const myLibrary = (()=>{
 
 const displayControl = (()=>{
 
-    const headArray = ['No.', 'Title', 'Author', 'Pages', 'Status','readStatus','delete']
+    const headArray = ['No.', 'title', 'author', 'pages', 'Status','readStatus','delete'];
+    const mainContainer = document.querySelector('.main-container');
+
+    function addBlock(obj){
+        let handle = document.createElement(obj['type']);
+        handle.id = obj['id'];
+        if(obj['class'])
+        handle.classList.add(obj['class']);
+        handle.textContent = obj['value'];
+        console.log(handle);
+        mainContainer.appendChild(handle);
+    }
+    function clear(){
+        while(mainContainer.firstChild)
+        mainContainer.removeChild(mainContainer.firstChild);
+    }
+
     function render(bookArray){
+        clear();
         bookArray.forEach(item=>{
-            headArray.forEach(field=>{
-                let newItem = Object.create(newElement);
-                if(field == 'readStatus' || field == 'delete'){
-                newItem.create('button');
-                if(field == 'delete')
-                newItem.addClass(['remove-btn']);
-                else
-                newItem.addClass('read-btn')
+            console.log(item);
+                addBlock({type:'div',id:`serial${bookArray.indexOf(item)}`,class:bookArray.indexOf(item)==0 ? 'head':(item.getStatus == 'read'? 'read':'unread'),value:(bookArray.indexOf(item)==0 ? 'Sr.No' : `${bookArray.indexOf(item)}`)});
+                addBlock({type:'div',id:`title${bookArray.indexOf(item)}`,class:bookArray.indexOf(item)==0 ? 'head':(item.getStatus == 'read'? 'read':'unread'),value:`${item.getTitle}`});
+                addBlock({type:'div',id:`author${bookArray.indexOf(item)}`,class:bookArray.indexOf(item)==0 ? 'head':(item.getStatus == 'read'? 'read':'unread'),value:`${item.getAuthor}`});
+                addBlock({type:'div',id:`pages${bookArray.indexOf(item)}`,class:bookArray.indexOf(item)==0 ? 'head':(item.getStatus == 'read'? 'read':'unread'),value:`${item.getPages}`});
+                addBlock({type:'div',id:`status${bookArray.indexOf(item)}`,class:bookArray.indexOf(item)==0 ? 'head':(item.getStatus == 'read'? 'read':'unread'),value:`${item.getStatus}`});
+                if(bookArray.indexOf(item)>0){
+                addBlock({type:'button',id:`readBtn${bookArray.indexOf(item)}`,class:'read-btn',value:'Read/Unread'});
+                addBlock({type:'button',id:`deleteBtn${bookArray.indexOf(item)}`,class:'remove-btn',value:'Delete'});
                 }
                 else{
-                newItem.create('div');
-                if(item.status == 'read')
-                newItem.addClass(['read']);
-                else
-                newItem.addClass(['unread']);
+                    addBlock({type:'div',id:`readBtn${bookArray.indexOf(item)}`,class:'',value:''});
+                    addBlock({type:'div',id:`readBtn${bookArray.indexOf(item)}`,class:'',value:''});
                 }
-                newItem.addId(`${field}${bookArray.indexOf(item)}`);
-                newItem.text(item.status);//This is not correct. Need to correct this.
-                newItem.append();
-            });
         });
-    }
-    function render(){
-        addBookEntry();
     }
     return {render}
 })();

@@ -40,13 +40,13 @@ h2{
     padding:10px;
 }
 
-.book-unread{
+.unread{
     font-size:15px;
     background-color:#fff76a;
     padding:10px;
 }
 
-.book-read{
+.read{
     font-size:15px;
     background-color:#adce74;
     padding:10px;
