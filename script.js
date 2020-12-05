@@ -19,6 +19,7 @@ const book = class book{
     get getStatus(){
         return this.status;
     }
+
     set setStatus(str){
         this.status = str;
     }
@@ -53,26 +54,27 @@ const myLibrary = (()=>{
     }
 
     function removeBook(event){
-        bookList.splice(bookIndex,1);
-        displayControl.render();
+        bookList.splice(Number(this.id.replace(/^\D+/g,'')),1);
+        displayControl.render(bookList);
     }
 
     function updateBook(event){ 
-        let bookIndex = Number(this.id.replace(/^\D+/g),''); //get index of the book from id
+        console.log(this.id);
+        let bookIndex = Number(this.id.replace(/^\D+/g,'')); //get index of the book from id
         if(bookList[bookIndex].getStatus === 'read'){
             bookList[bookIndex].setStatus = 'unread';
         }
         else{
             bookList[bookIndex].setStatus = 'read';
         }
-        displayControl.render();
+        displayControl.render(bookList);
     }
 
 
-    function initBtns(){
-        addBook({title:'Title', author:'Author',pages:'Pages',status:'Status'});
+    function init(){
+        addBook({title:'Title', author:'Author',pages:'Pages',status:'Status'}); //This is added just to create a header
 
-        buttons.forEach(element=>{
+        buttons.forEach(element=>{  //add event listeners to all static html buttons
             element.addEventListener('click',function(e){
                 console.log(`${element.id} btn clicked`);
                     Array.from(mainHeader).filter(item=>item.id == 'myForm')[0].style.display = (element.id == 'add'?'block':'none');
@@ -82,13 +84,17 @@ const myLibrary = (()=>{
         });
     }
 
-    return{initBtns, removeBook, updateBook}
+    return{init, removeBook, updateBook}
 })();
 
 const displayControl = (()=>{
 
     const headArray = ['No.', 'title', 'author', 'pages', 'Status','readStatus','delete'];
     const mainContainer = document.querySelector('.main-container');
+    const handler = {   //create mapping of eventListeners corresponding to each class
+        ['remove-btn']: myLibrary.removeBook,
+        ['read-btn']: myLibrary.updateBook,
+    }
 
     function addBlock(obj){
         let handle = document.createElement(obj['type']);
@@ -98,7 +104,11 @@ const displayControl = (()=>{
         handle.textContent = obj['value'];
         console.log(handle);
         mainContainer.appendChild(handle);
-    }
+        if(obj['type'] == 'button'){
+            handle.addEventListener('click',handler[obj['class']]);
+            }
+        }
+
     function clear(){
         while(mainContainer.firstChild)
         mainContainer.removeChild(mainContainer.firstChild);
@@ -106,26 +116,27 @@ const displayControl = (()=>{
 
     function render(bookArray){
         clear();
-        bookArray.forEach(item=>{
+        bookArray.forEach(item=>{ //Iterate through each book
             console.log(item);
-                addBlock({type:'div',id:`serial${bookArray.indexOf(item)}`,class:bookArray.indexOf(item)==0 ? 'head':(item.getStatus == 'read'? 'read':'unread'),value:(bookArray.indexOf(item)==0 ? 'Sr.No' : `${bookArray.indexOf(item)}`)});
-                addBlock({type:'div',id:`title${bookArray.indexOf(item)}`,class:bookArray.indexOf(item)==0 ? 'head':(item.getStatus == 'read'? 'read':'unread'),value:`${item.getTitle}`});
-                addBlock({type:'div',id:`author${bookArray.indexOf(item)}`,class:bookArray.indexOf(item)==0 ? 'head':(item.getStatus == 'read'? 'read':'unread'),value:`${item.getAuthor}`});
-                addBlock({type:'div',id:`pages${bookArray.indexOf(item)}`,class:bookArray.indexOf(item)==0 ? 'head':(item.getStatus == 'read'? 'read':'unread'),value:`${item.getPages}`});
-                addBlock({type:'div',id:`status${bookArray.indexOf(item)}`,class:bookArray.indexOf(item)==0 ? 'head':(item.getStatus == 'read'? 'read':'unread'),value:`${item.getStatus}`});
-                if(bookArray.indexOf(item)>0){
-                addBlock({type:'button',id:`readBtn${bookArray.indexOf(item)}`,class:'read-btn',value:'Read/Unread'});
-                addBlock({type:'button',id:`deleteBtn${bookArray.indexOf(item)}`,class:'remove-btn',value:'Delete'});
-                }
-                else{
-                    addBlock({type:'div',id:`readBtn${bookArray.indexOf(item)}`,class:'',value:''});
-                    addBlock({type:'div',id:`readBtn${bookArray.indexOf(item)}`,class:'',value:''});
-                }
+            addBlock({type:'div',id:`serial${bookArray.indexOf(item)}`,class:bookArray.indexOf(item)==0 ? 'head':(item.getStatus == 'read'? 'read':'unread'),value:(bookArray.indexOf(item)==0 ? 'Sr.No' : `${bookArray.indexOf(item)}`)});
+            addBlock({type:'div',id:`title${bookArray.indexOf(item)}`,class:bookArray.indexOf(item)==0 ? 'head':(item.getStatus == 'read'? 'read':'unread'),value:`${item.getTitle}`});
+            addBlock({type:'div',id:`author${bookArray.indexOf(item)}`,class:bookArray.indexOf(item)==0 ? 'head':(item.getStatus == 'read'? 'read':'unread'),value:`${item.getAuthor}`});
+            addBlock({type:'div',id:`pages${bookArray.indexOf(item)}`,class:bookArray.indexOf(item)==0 ? 'head':(item.getStatus == 'read'? 'read':'unread'),value:`${item.getPages}`});
+            addBlock({type:'div',id:`status${bookArray.indexOf(item)}`,class:bookArray.indexOf(item)==0 ? 'head':(item.getStatus == 'read'? 'read':'unread'),value:`${item.getStatus}`});
+            if(bookArray.indexOf(item)>0){
+            addBlock({type:'button',id:`readBtn${bookArray.indexOf(item)}`,class:'read-btn',value:'Read/Unread'});
+            addBlock({type:'button',id:`deleteBtn${bookArray.indexOf(item)}`,class:'remove-btn',value:'Delete'});
+            }
+            else{ //empty div added to maintain symmetry
+                addBlock({type:'div',id:`readBtn${bookArray.indexOf(item)}`,class:'',value:''});
+                addBlock({type:'div',id:`readBtn${bookArray.indexOf(item)}`,class:'',value:''});
+            }
+                
         });
     }
     return {render}
 })();
 
-myLibrary.initBtns();
+myLibrary.init();
 
 
